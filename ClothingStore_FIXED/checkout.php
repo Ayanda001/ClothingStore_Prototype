@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // ── Compute totals ────────────────────────────────────────────────────────────
-$cartTotal = array_sum(array_map(fn($i) => $i['price'] * $i['qty'], $cart));
+$cartTotal = array_sum(array_map(function($i) { return $i['price'] * $i['qty']; }, $cart));
 $conn->close();
 ?>
 <!DOCTYPE html>

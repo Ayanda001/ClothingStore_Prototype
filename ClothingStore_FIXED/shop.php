@@ -17,10 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addToCart'])) {
 
     // Fetch item
     $s = $conn->prepare("SELECT clothesID, title, sellPrice FROM tblClothes WHERE clothesID = ? AND status = 'active'");
-    $s->bind_param("i", $clothesID);
-    $s->execute();
-    $item = $s->get_result()->fetch_assoc();
-    $s->close();
+    if ($s) {
+        $s->bind_param("i", $clothesID);
+        $s->execute();
+        $item = $s->get_result()->fetch_assoc();
+        $s->close();
+    } else {
+        $item = null;
+    }
 
     if ($item) {
         if (!isset($_SESSION['cart'])) $_SESSION['cart'] = [];

@@ -30,11 +30,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $stmt = $conn->prepare("SELECT userID FROM tblUser WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute();
-        $stmt->store_result();
-        if ($stmt->num_rows > 0) $errors[] = "An account with that email already exists.";
-        $stmt->close();
+        if (!$stmt) {
+            $errors[] = "Database error: " . $conn->error;
+        } else {
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->store_result();
+            if ($stmt->num_rows > 0) $errors[] = "An account with that email already exists.";
+            $stmt->close();
+        }
     }
 
     if (empty($errors)) {
@@ -43,16 +47,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "INSERT INTO tblUser (fullName, email, password, province, isVerified, status, role)
              VALUES (?, ?, ?, ?, 0, 'pending', ?)"
         );
-        $stmt->bind_param("sssss", $fullName, $email, $hashed, $province, $role);
-        if ($stmt->execute()) {
-            $roleLabel = $role === 'seller' ? 'Seller' : 'Buyer';
-            $success   = "Registration successful! Your <strong>$roleLabel</strong> account is pending admin verification.";
-            $fullName  = $email = $province = '';
-            $role      = 'buyer';
+        if (!$stmt) {
+            $errors[] = "Database error: " . $conn->error;
         } else {
-            $errors[] = "Registration failed. Please try again.";
+            $stmt->bind_param("sssss", $fullName, $email, $hashed, $province, $role);
+            if ($stmt->execute()) {
+                $roleLabel = $role === 'seller' ? 'Seller' : 'Buyer';
+                $success   = "Registration successful! Your <strong>$roleLabel</strong> account is pending admin verification.";
+                $fullName  = $email = $province = '';
+                $role      = 'buyer';
+            } else {
+                $errors[] = "Registration failed. Please try again.";
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 $conn->close();

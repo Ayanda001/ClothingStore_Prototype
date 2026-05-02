@@ -30,23 +30,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt = $conn->prepare(
             "SELECT adminID, fullName, email FROM tblAdmin WHERE email = ? AND password = ?"
         );
-        $stmt->bind_param("ss", $email, $hashed);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows === 0) {
-            $error = "Invalid admin credentials.";
+        if (!$stmt) {
+            $error = "Database error: " . $conn->error;
         } else {
-            $admin = $result->fetch_assoc();
-            $_SESSION['adminID']   = $admin['adminID'];
-            $_SESSION['adminName'] = $admin['fullName'];
-            $_SESSION['adminEmail']= $admin['email'];
-            $_SESSION['role']      = 'admin';
+            $stmt->bind_param("ss", $email, $hashed);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-            header("Location: index.php");
-            exit;
+            if ($result->num_rows === 0) {
+                $error = "Invalid admin credentials.";
+            } else {
+                $admin = $result->fetch_assoc();
+                $_SESSION['adminID']   = $admin['adminID'];
+                $_SESSION['adminName'] = $admin['fullName'];
+                $_SESSION['adminEmail']= $admin['email'];
+                $_SESSION['role']      = 'admin';
+
+                header("Location: index.php");
+                exit;
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 $conn->close();

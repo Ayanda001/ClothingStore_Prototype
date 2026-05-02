@@ -96,8 +96,8 @@ $users = $conn->query(
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 $totalUsers   = count($users);
-$pending      = count(array_filter($users, fn($u) => $u['status'] === 'pending'));
-$active       = count(array_filter($users, fn($u) => $u['status'] === 'active'));
+$pending      = count(array_filter($users, function($u) { return $u['status'] === 'pending'; }));
+$active       = count(array_filter($users, function($u) { return $u['status'] === 'active'; }));
 
 $conn->close();
 
@@ -230,7 +230,7 @@ $provinces = ['Eastern Cape','Free State','Gauteng','KwaZulu-Natal',
   </div>
 
   <!-- ── Pending Users ────────────────────────────────────────── -->
-  <?php $pendingUsers = array_filter($users, fn($u) => $u['status'] === 'pending'); ?>
+  <?php $pendingUsers = array_filter($users, function($u) { return $u['status'] === 'pending'; }); ?>
   <div class="section-title">⏳ Pending Verification (<?= count($pendingUsers) ?>)</div>
   <?php if (empty($pendingUsers)): ?>
     <p style="color:var(--muted);margin-bottom:2rem">No pending users.</p>

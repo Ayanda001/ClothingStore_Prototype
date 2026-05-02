@@ -35,23 +35,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($errors)) {
         $stmt = $conn->prepare("SELECT adminID FROM tblAdmin WHERE email = ?");
-        $stmt->bind_param("s", $email);
-        $stmt->execute(); $stmt->store_result();
-        if ($stmt->num_rows > 0) $errors[] = "An admin account with that email already exists.";
-        $stmt->close();
+        if (!$stmt) {
+            $errors[] = "Database error: " . $conn->error;
+        } else {
+            $stmt->bind_param("s", $email);
+            $stmt->execute(); $stmt->store_result();
+            if ($stmt->num_rows > 0) $errors[] = "An admin account with that email already exists.";
+            $stmt->close();
+        }
     }
 
     if (empty($errors)) {
         $hashed = md5($password);
         $stmt = $conn->prepare("INSERT INTO tblAdmin (fullName, email, password) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $fullName, $email, $hashed);
-        if ($stmt->execute()) {
-            $success  = "Admin account created! You can now <a href='login.php'>login here</a>.";
-            $fullName = $email = '';
+        if (!$stmt) {
+            $errors[] = "Database error: " . $conn->error;
         } else {
-            $errors[] = "Registration failed. Please try again.";
+            $stmt->bind_param("sss", $fullName, $email, $hashed);
+            if ($stmt->execute()) {
+                $success  = "Admin account created! You can now <a href='login.php'>login here</a>.";
+                $fullName = $email = '';
+            } else {
+                $errors[] = "Registration failed. Please try again.";
+            }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 $conn->close();

@@ -165,7 +165,7 @@ ClothingStore_FIXED/
 
 ## Video Demonstration
 
-[Placeholder for video demonstration link]
+[Watch the video demonstration](https://youtu.be/DTmx_lF54tY)
 
 ---
 

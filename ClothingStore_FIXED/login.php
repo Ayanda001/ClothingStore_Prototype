@@ -35,29 +35,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              FROM tblUser
              WHERE email = ? AND password = ?"
         );
-        $stmt->bind_param("ss", $email, $hashed);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows === 0) {
-            $error = "Incorrect email or password. Please try again.";
+        if (!$stmt) {
+            $error = "Database error: " . $conn->error;
         } else {
-            $user = $result->fetch_assoc();   // associative read
+            $stmt->bind_param("ss", $email, $hashed);
+            $stmt->execute();
+            $result = $stmt->get_result();
 
-            if ($user['isVerified'] != 1 || $user['status'] !== 'active') {
-                $error = "Your account is pending administrator verification. Please check back later.";
+            if ($result->num_rows === 0) {
+                $error = "Incorrect email or password. Please try again.";
             } else {
-                // ── Success: store session ────────────────────────────────────
-                $_SESSION['userID']   = $user['userID'];
-                $_SESSION['fullName'] = $user['fullName'];
-                $_SESSION['email']    = $user['email'];
-                $_SESSION['role']     = 'user';
+                $user = $result->fetch_assoc();   // associative read
 
-                header("Location: dashboard.php");
-                exit;
+                if ($user['isVerified'] != 1 || $user['status'] !== 'active') {
+                    $error = "Your account is pending administrator verification. Please check back later.";
+                } else {
+                    // ── Success: store session ────────────────────────────────────
+                    $_SESSION['userID']   = $user['userID'];
+                    $_SESSION['fullName'] = $user['fullName'];
+                    $_SESSION['email']    = $user['email'];
+                    $_SESSION['role']     = 'user';
+
+                    header("Location: dashboard.php");
+                    exit;
+                }
             }
+            $stmt->close();
         }
-        $stmt->close();
     }
 }
 
