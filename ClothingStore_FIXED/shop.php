@@ -54,15 +54,12 @@ $result = $conn->query(
             sellPrice, retailPrice, imageFile
      FROM tblClothes WHERE status = 'active' ORDER BY createdAt DESC"
 );
-if (!$result) {
-    die("Database query failed: " . $conn->error);
-}
 $clothes = $result->fetch_all(MYSQLI_ASSOC);
 
 $conn->close();
 
 $cart     = $_SESSION['cart'] ?? [];
-$cartTotal = array_sum(array_map(function($i) { return $i['price'] * $i['qty']; }, $cart));
+$cartTotal = array_sum(array_map(fn($i) => $i['price'] * $i['qty'], $cart));
 
 // Condition badge colours
 $condColour = [
@@ -77,7 +74,7 @@ $condColour = [
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shop — DISCOVER AND RE-WIND EVERYWHERE</title>
+<title>Shop — DISCOVER AND RE-WIND</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root { --bg:#0c0c0c; --card:#161616; --gold:#c9a86c; --text:#e5e5e5; --muted:#888; --border:#2a2a2a; --radius:8px; }
@@ -172,7 +169,7 @@ $condColour = [
 </head>
 <body>
 <nav>
-  <a href="index.php" class="logo">DISCOVER AND RE-WIND EVERYWHERE</a>
+  <a href="index.php" class="logo">DISCOVER AND RE-WIND</a>
   <div class="nav-links">
     <a href="index.php">Home</a>
     <a href="shop.php">Shop</a>

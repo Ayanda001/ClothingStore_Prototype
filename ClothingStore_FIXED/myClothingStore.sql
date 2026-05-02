@@ -1,6 +1,6 @@
 -- ============================================================
 -- myClothingStore.sql
--- DDL for ClothingStore database
+-- DDL for DISCOVER AND RE-WIND database
 -- Run this in phpMyAdmin or MySQL console to set up the database
 -- ============================================================
 
@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS tblUser (
     province    VARCHAR(50)         DEFAULT NULL,
     isVerified  TINYINT(1)          NOT NULL DEFAULT 0,  -- 0=pending, 1=verified
     status      ENUM('active','inactive','pending') NOT NULL DEFAULT 'pending',
+    role        ENUM('buyer','seller')      NOT NULL DEFAULT 'buyer',
     createdAt   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
@@ -127,12 +128,12 @@ INSERT INTO tblClothes (title, category, brand, size, colour, condition_, sellPr
 -- Seed data: tblUser (password = MD5 of value shown)
 -- passwords: pass1 = 29ef52e7563626a96cea7f4b4085c124 = MD5('password1')
 -- -----------------------------------------------
-INSERT INTO tblUser (fullName, email, password, province, isVerified, status) VALUES
-('John Doe',        'j.doe@abc.co.za',       MD5('password1'), 'Gauteng',    1, 'active'),
-('Jane Smith',      'j.smith@xyz.co.za',     MD5('password2'), 'Western Cape', 1, 'active'),
-('Thabo Nkosi',     't.nkosi@mail.co.za',    MD5('password3'), 'KwaZulu-Natal', 1, 'active'),
-('Ayanda Maseko',   'a.maseko@web.co.za',    MD5('password4'), 'Gauteng',    0, 'pending'),
-('Lerato Dlamini',  'l.dlamini@shop.co.za',  MD5('password5'), 'Limpopo',    1, 'active'),
-('Sipho Mthembu',   's.mthembu@clothe.co.za',MD5('password6'), 'Mpumalanga', 0, 'pending'),
-('Naledi Khumalo',  'n.khumalo@wear.co.za',  MD5('password7'), 'North West', 1, 'active'),
-('David van Wyk',   'd.vanwyk@store.co.za',  MD5('password8'), 'Eastern Cape', 0, 'pending');
+INSERT INTO tblUser (fullName, email, password, province, isVerified, status, role) VALUES
+('John Doe',        'j.doe@abc.co.za',       MD5('password1'), 'Gauteng',    1, 'active',  'buyer'),
+('Jane Smith',      'j.smith@xyz.co.za',     MD5('password2'), 'Western Cape', 1, 'active',  'buyer'),
+('Thabo Nkosi',     't.nkosi@mail.co.za',    MD5('password3'), 'KwaZulu-Natal', 1, 'active',  'buyer'),
+('Ayanda Maseko',   'a.maseko@web.co.za',    MD5('password4'), 'Gauteng',    0, 'pending', 'seller'),
+('Lerato Dlamini',  'l.dlamini@shop.co.za',  MD5('password5'), 'Limpopo',    1, 'active',  'seller'),
+('Sipho Mthembu',   's.mthembu@clothe.co.za',MD5('password6'), 'Mpumalanga', 0, 'pending', 'buyer'),
+('Naledi Khumalo',  'n.khumalo@wear.co.za',  MD5('password7'), 'North West', 1, 'active',  'buyer'),
+('David van Wyk',   'd.vanwyk@store.co.za',  MD5('password8'), 'Eastern Cape', 0, 'pending', 'seller');

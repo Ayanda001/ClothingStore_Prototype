@@ -96,8 +96,8 @@ $users = $conn->query(
 
 // ── Stats ─────────────────────────────────────────────────────────────────────
 $totalUsers   = count($users);
-$pending      = count(array_filter($users, function($u) { return $u['status'] === 'pending'; }));
-$active       = count(array_filter($users, function($u) { return $u['status'] === 'active'; }));
+$pending      = count(array_filter($users, fn($u) => $u['status'] === 'pending'));
+$active       = count(array_filter($users, fn($u) => $u['status'] === 'active'));
 
 $conn->close();
 
@@ -109,7 +109,7 @@ $provinces = ['Eastern Cape','Free State','Gauteng','KwaZulu-Natal',
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin Panel — DISCOVER AND RE-WIND EVERYWHERE</title>
+<title>Admin Panel — DISCOVER AND RE-WIND</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root { --bg:#07070a; --card:#111318; --gold:#c9a86c; --text:#e5e5e5; --muted:#666; --border:#1e1e28; --radius:8px; }
@@ -230,7 +230,7 @@ $provinces = ['Eastern Cape','Free State','Gauteng','KwaZulu-Natal',
   </div>
 
   <!-- ── Pending Users ────────────────────────────────────────── -->
-  <?php $pendingUsers = array_filter($users, function($u) { return $u['status'] === 'pending'; }); ?>
+  <?php $pendingUsers = array_filter($users, fn($u) => $u['status'] === 'pending'); ?>
   <div class="section-title">⏳ Pending Verification (<?= count($pendingUsers) ?>)</div>
   <?php if (empty($pendingUsers)): ?>
     <p style="color:var(--muted);margin-bottom:2rem">No pending users.</p>

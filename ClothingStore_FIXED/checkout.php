@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // ── Compute totals ────────────────────────────────────────────────────────────
-$cartTotal = array_sum(array_map(function($i) { return $i['price'] * $i['qty']; }, $cart));
+$cartTotal = array_sum(array_map(fn($i) => $i['price'] * $i['qty'], $cart));
 $conn->close();
 ?>
 <!DOCTYPE html>
@@ -72,7 +72,7 @@ $conn->close();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout — DISCOVER AND RE-WIND EVERYWHERE</title>
+<title>Checkout — DISCOVER AND RE-WIND</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root { --bg:#0c0c0c; --card:#161616; --gold:#c9a86c; --gold2:#e8c98a; --text:#e5e5e5; --muted:#888; --err:#e05252; --ok:#5cb85c; --border:#2a2a2a; --radius:8px; }
@@ -136,7 +136,7 @@ $conn->close();
 </head>
 <body>
 <nav>
-  <a href="index.php" class="logo">DISCOVER AND RE-WIND EVERYWHERE</a>
+  <a href="index.php" class="logo">DISCOVER AND RE-WIND</a>
   <div class="nav-links">
     <a href="shop.php">Shop</a>
     <a href="dashboard.php">My Account</a>

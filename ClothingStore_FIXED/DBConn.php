@@ -1,7 +1,7 @@
 <?php
 /**
  * DBConn.php
- * Database connection file for ClothingStore
+ * Database connection file for DISCOVER AND RE-WIND
  * Uses MySQLi improved connection
  */
 

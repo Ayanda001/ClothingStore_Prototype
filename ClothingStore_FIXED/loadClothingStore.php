@@ -1,12 +1,12 @@
 <?php
 /**
- * loadClothingStore.php
- * Drops all tables then recreates the full ClothingStore schema.
+ * loadDISCOVER AND RE-WIND.php
+ * Drops all tables then recreates the full DISCOVER AND RE-WIND schema.
  * Uses MySQLi (improved MySQL).
  */
 
 // SECURITY: Only accessible with the correct secret token
-// Visit: loadClothingStore.php?token=setup_DR2025 to run setup
+// Visit: loadDISCOVER AND RE-WIND.php?token=setup_DR2025 to run setup
 if (!isset($_GET['token']) || $_GET['token'] !== 'setup_DR2025') {
     http_response_code(403);
     die('<h2>403 Forbidden</h2><p>This setup file is protected. Contact the administrator.</p>');
@@ -158,7 +158,7 @@ $conn->close();
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>loadClothingStore.php</title>
+<title>loadDISCOVER AND RE-WIND.php</title>
 <style>
   body { font-family:'Segoe UI',sans-serif; background:#0f0f0f; color:#e5e5e5; padding:2rem; max-width:800px; margin:auto; }
   h1   { color:#c9a86c; border-bottom:1px solid #333; padding-bottom:.5rem; }
@@ -169,7 +169,7 @@ $conn->close();
 </style>
 </head>
 <body>
-<h1>📦 loadClothingStore.php — Execution Log</h1>
+<h1>📦 loadDISCOVER AND RE-WIND.php — Execution Log</h1>
 <ul>
 <?php foreach ($log as [$type, $msg]): ?>
   <li class="<?= $type ?>"><?= htmlspecialchars($msg) ?></li>

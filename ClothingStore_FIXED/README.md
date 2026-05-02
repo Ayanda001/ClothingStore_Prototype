@@ -1,84 +1,86 @@
-﻿# DISCOVER AND RE-WIND EVERYWHERE
-
-## WEDE6021 POE Project
-
-A local PHP / MySQL web app for browsing pre-loved clothing, managing a shopping cart, and placing orders with admin-verified users.
+# Discover & Re-Wind — ClothingStore
+### WEDE6021 POE Project — WAMP + VS Code Setup Guide
 
 ---
 
-## Prerequisites
+## What You Need
 
-- WAMP Server installed and running
-- VS Code installed
-- A modern browser (Chrome, Edge, Firefox)
+- **WAMP Server** — already installed
+- **VS Code** — already installed
+- **Browser** — Chrome or Firefox recommended
 
 ---
 
-## Setup Instructions
+## Step-by-Step Setup
 
-### 1. Place the project folder in WAMP
+---
 
-1. Open **File Explorer**.
-2. Go to `C:\wamp64\www\`.
-   - If you have 32-bit WAMP, use `C:\wamp\www\`.
-3. Copy the entire folder `ClothingStore_FIXED` into that directory.
+### STEP 1 — Copy the project into WAMP
 
-Resulting path:
+1. Open **File Explorer**
+2. Navigate to: `C:\wamp64\www\`
+   *(If you installed 32-bit WAMP it may be `C:\wamp\www\`)*
+3. Copy the entire `ClothingStore_FIXED` folder into that `www` folder
 
-```text
+Your path should look like:
+```
 C:\wamp64\www\ClothingStore_FIXED\
 ```
 
 ---
 
-### 2. Start WAMP
+### STEP 2 — Start WAMP
 
-1. Open the WAMP Server application.
-2. Wait until the tray icon turns **GREEN**.
-3. If it stays orange, right-click the tray icon and choose **Restart All Services**.
+1. Double-click the **WAMP Server** icon on your desktop or taskbar
+2. Wait for the icon in the **system tray** (bottom-right corner) to turn **GREEN**
+3. If it stays orange, right-click it → Restart All Services
 
-> WAMP must be green before the PHP site works.
+> The icon MUST be green before anything will work.
 
 ---
 
-### 3. Import the database
+### STEP 3 — Open phpMyAdmin
 
-1. Open phpMyAdmin from the WAMP tray menu.
-2. Login with:
+1. Left-click the green WAMP tray icon
+2. Click **phpMyAdmin** — it opens in your browser
+3. Login with:
    - Username: `root`
-   - Password: *(leave blank)*
-3. Click **Import**.
-4. Choose `myClothingStore.sql` from the project folder.
-5. Click **Go**.
-
-This creates the `ClothingStore` database and the following tables:
-
-- `tblUser`
-- `tblAdmin`
-- `tblClothes`
-- `tblOrder`
-
-It also inserts sample data with 30 product records, 5 admin users, and 8 customer accounts.
+   - Password: *(leave blank — WAMP default has no password)*
 
 ---
 
-### 4. Open the project in VS Code
+### STEP 4 — Import the database
 
-1. Launch **VS Code**.
-2. Select **File → Open Folder**.
-3. Open `C:\wamp64\www\ClothingStore_FIXED`.
+1. In phpMyAdmin, click **Import** in the top menu bar
+2. Click **Choose File**
+3. Navigate to `C:\wamp64\www\ClothingStore_FIXED\myClothingStore.sql` and select it
+4. Scroll down and click **Go**
+
+You will see a green success message. This creates:
+- The `ClothingStore` database
+- 4 tables: tblUser, tblAdmin, tblClothes, tblOrder
+- All sample data (30 clothing items, 5 admin accounts, 8 users)
 
 ---
 
-### 5. Run the site
+### STEP 5 — Open the project in VS Code
 
-Open this URL in your browser:
+1. Open **VS Code**
+2. Go to **File → Open Folder**
+3. Navigate to `C:\wamp64\www\ClothingStore_FIXED` and click **Select Folder**
 
-```text
+All your PHP files will appear in the Explorer panel on the left.
+
+---
+
+### STEP 6 — Run the site
+
+Open your browser and go to:
+```
 http://localhost/ClothingStore_FIXED/
 ```
 
-If the page does not load, confirm WAMP is running and the folder is in the correct `www` directory.
+The home page should load. You are ready to go.
 
 ---
 
@@ -88,14 +90,16 @@ If the page does not load, confirm WAMP is running and the folder is in the corr
 
 | Name | Email | Password | Status |
 |------|-------|----------|--------|
-| John Doe | j.doe@abc.co.za | password1 | Active |
-| Jane Smith | j.smith@xyz.co.za | password2 | Active |
-| Thabo Nkosi | t.nkosi@mail.co.za | password3 | Active |
-| Lerato Dlamini | l.dlamini@shop.co.za | password5 | Active |
-| Naledi Khumalo | n.khumalo@wear.co.za | password7 | Active |
-| Ayanda Maseko | a.maseko@web.co.za | password4 | Pending |
-| Sipho Mthembu | s.mthembu@clothe.co.za | password6 | Pending |
-| David van Wyk | d.vanwyk@store.co.za | password8 | Pending |
+| John Doe | j.doe@abc.co.za | password1 | Active ✅ |
+| Jane Smith | j.smith@xyz.co.za | password2 | Active ✅ |
+| Thabo Nkosi | t.nkosi@mail.co.za | password3 | Active ✅ |
+| Lerato Dlamini | l.dlamini@shop.co.za | password5 | Active ✅ |
+| Naledi Khumalo | n.khumalo@wear.co.za | password7 | Active ✅ |
+| Ayanda Maseko | a.maseko@web.co.za | password4 | Pending ⏳ (needs admin approval) |
+| Sipho Mthembu | s.mthembu@clothe.co.za | password6 | Pending ⏳ |
+| David van Wyk | d.vanwyk@store.co.za | password8 | Pending ⏳ |
+
+---
 
 ### Admin Accounts
 
@@ -107,70 +111,66 @@ If the page does not load, confirm WAMP is running and the folder is in the corr
 | Content Admin | content@clothingstore.co.za | content123 |
 | Finance Admin | finance@clothingstore.co.za | finance123 |
 
-Admin login page:
+Admin panel: `http://localhost/ClothingStore_FIXED/admin/login.php`
 
-```text
-http://localhost/ClothingStore_FIXED/admin/login.php
+---
+
+## All Site Pages
+
+| URL | What it does |
+|-----|-------------|
+| `http://localhost/ClothingStore_FIXED/` | Home page |
+| `.../shop.php` | Browse clothes, add to cart |
+| `.../checkout.php` | Place an order (login required) |
+| `.../login.php` | Customer login |
+| `.../register.php` | Register new account |
+| `.../dashboard.php` | View account + order history |
+| `.../admin/login.php` | Admin login |
+| `.../admin/index.php` | Admin panel — verify/manage users |
+
+---
+
+## Database Reset Tool
+
+To wipe and rebuild the database from scratch, visit:
 ```
-
----
-
-## Pages
-
-| Page | Purpose |
-|------|---------|
-| `/` | Home page |
-| `/shop.php` | Browse products and add to cart |
-| `/checkout.php` | Finalize order (login required) |
-| `/login.php` | Customer login |
-| `/register.php` | Customer registration |
-| `/dashboard.php` | Account and order history |
-| `/admin/login.php` | Admin login |
-| `/admin/index.php` | Admin dashboard |
-
----
-
-## Database Reset
-
-To rebuild the database from scratch, open:
-
-```text
 http://localhost/ClothingStore_FIXED/loadClothingStore.php?token=setup_DR2025
 ```
-
-> Warning: This deletes all existing data and restores the default seed values.
+> WARNING: This deletes ALL data and re-seeds from defaults.
 
 ---
 
-## Project Structure
+## Folder Structure
 
-```text
+```
 ClothingStore_FIXED/
 ├── admin/
-│   ├── index.php
-│   ├── login.php
+│   ├── index.php        Admin dashboard
+│   ├── login.php        Admin login
 │   └── logout.php
-├── css/
-├── images/
-├── js/
-├── DBConn.php
-├── checkout.php
-├── dashboard.php
-├── index.php
-├── loadClothingStore.php
-├── login.php
+├── css/                 Add external stylesheets here
+├── images/              Add product photos here (jpg/png)
+├── js/                  Add external scripts here
+├── DBConn.php           Database connection settings
+├── checkout.php         Order placement page
+├── dashboard.php        Customer account & orders
+├── index.php            Home page
+├── loadClothingStore.php  DB reset (token-protected)
+├── login.php            Customer login
 ├── logout.php
-├── myClothingStore.sql
-├── register.php
-└── shop.php
+├── myClothingStore.sql  Database schema + seed data
+├── register.php         New customer registration
+└── shop.php             Shop + cart
 ```
 
 ---
 
 ## Troubleshooting
 
-- **Blank page**: Ensure WAMP is green and both Apache/MySQL are running.
-- **Database connection failed**: Open `DBConn.php` and confirm `DB_HOST`, `DB_USER`, `DB_PASS`, and `DB_NAME` are correct.
-- **Page not found**: Verify the project folder is located at `C:\wamp64\www\ClothingStore_FIXED`.
-- **phpMyAdmin will not open**: Restart WAMP services from the tray icon.
-- **Login issues**: Ensure the database import completed successfully.
+| Problem | Solution |
+|---------|----------|
+| White/blank page | WAMP icon must be green. Check Apache and MySQL are running. |
+| "Connection failed" error | Open DBConn.php in VS Code — make sure DB_PASS is empty `''` |
+| Page not found | Make sure folder is inside `C:\wamp64\www\` not your Desktop |
+| phpMyAdmin won't open | Right-click WAMP tray icon → Restart All Services |
+| Can't log in with test accounts | Make sure you imported myClothingStore.sql in Step 4 |
