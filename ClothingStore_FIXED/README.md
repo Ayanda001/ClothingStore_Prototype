@@ -1,4 +1,4 @@
-# Discover & Re-Wind — ClothingStore
+﻿# Discover & Re-Wind — ClothingStore
 ### WEDE6021 POE Project — WAMP + VS Code Setup Guide
 
 ---
@@ -161,7 +161,11 @@ ClothingStore_FIXED/
 ├── myClothingStore.sql  Database schema + seed data
 ├── register.php         New customer registration
 └── shop.php             Shop + cart
-```
+---
+
+## Video Demonstration
+
+[Placeholder for video demonstration link]
 
 ---
 

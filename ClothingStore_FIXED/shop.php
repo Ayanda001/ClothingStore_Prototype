@@ -59,10 +59,10 @@ $clothes = $result->fetch_all(MYSQLI_ASSOC);
 $conn->close();
 
 $cart     = $_SESSION['cart'] ?? [];
-$cartTotal = array_sum(array_map(fn($i) => $i['price'] * $i['qty'], $cart));
+$cartTotal = array_sum(array_map(function($i) { return $i['price'] * $i['qty']; }, $cart));
 
 // Condition badge colours
-$condColour = [
+$condColor = [
     'Mint'      => '#4caf50',
     'Good'      => '#2196f3',
     'Fair'      => '#ff9800',
@@ -200,7 +200,7 @@ $condColour = [
     <div class="grid">
       <?php foreach ($clothes as $item): ?>
         <?php
-          $condColor = $condColour[$item['condition_']] ?? '#888';
+          $condColor = $condColor[$item['condition_']] ?? '#888';
           $savings   = $item['retailPrice'] ? ($item['retailPrice'] - $item['sellPrice']) : 0;
         ?>
         <div class="product-card">
