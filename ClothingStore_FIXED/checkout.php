@@ -38,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "INSERT INTO tblOrder (userID, clothesID, quantity, totalAmount, deliveryAddress, status)
              VALUES (?, ?, ?, ?, ?, 'pending')"
         );
+        
+        $updateStmt = $conn->prepare("UPDATE tblClothes SET status = 'sold' WHERE clothesID = ?");
 
         $conn->begin_transaction();
         try {
@@ -48,9 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $stmt->bind_param("iiids", $userID, $clothesID, $qty, $totalAmount, $deliveryAddress);
                 $stmt->execute();
+                
+                // Mark item as sold
+                $updateStmt->bind_param("i", $clothesID);
+                $updateStmt->execute();
             }
             $conn->commit();
             $stmt->close();
+            $updateStmt->close();
 
             // Clear cart
             unset($_SESSION['cart']);
