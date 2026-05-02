@@ -12,7 +12,11 @@ require_once 'DBConn.php';
 
 // Already logged in?
 if (isset($_SESSION['userID'])) {
-    header("Location: dashboard.php");
+    if (($_SESSION['role'] ?? null) === 'seller') {
+        header("Location: seller-products.php");
+    } else {
+        header("Location: dashboard.php");
+    }
     exit;
 }
 
@@ -56,7 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['email']    = $user['email'];
                     $_SESSION['role']     = $user['role'];
 
-                    header("Location: dashboard.php");
+                    if ($user['role'] === 'seller') {
+                        header("Location: seller-products.php");
+                    } else {
+                        header("Location: dashboard.php");
+                    }
                     exit;
                 }
             }
