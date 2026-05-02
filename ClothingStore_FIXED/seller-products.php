@@ -71,13 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addProduct'])) {
 
     if (empty($errors)) {
         $stmt = $conn->prepare(
-            "INSERT INTO tblClothes (title, category, brand, size, colour, condition_, sellPrice, retailPrice, imageFile, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'active')"
+            "INSERT INTO tblClothes (sellerID, title, category, brand, size, colour, condition_, sellPrice, retailPrice, imageFile, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
         if (!$stmt) {
             $errors[] = "Database error: " . $conn->error;
         } else {
-            $stmt->bind_param("ssssssids", $title, $category, $brand, $size, $colour, $condition, $sellPrice, $retailPrice, $imageFile);
+            $status = 'active';
+            $stmt->bind_param("issssssddss", $userID, $title, $category, $brand, $size, $colour, $condition, $sellPrice, $retailPrice, $imageFile, $status);
             if ($stmt->execute()) {
                 $message = "✅ Product added successfully!";
                 $title = $category = $brand = $size = $colour = '';
@@ -91,9 +92,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['addProduct'])) {
     }
 }
 
-// Fetch seller's products
-$pStmt = $conn->prepare("SELECT clothesID, title, category, sellPrice, status, createdAt FROM tblClothes ORDER BY createdAt DESC LIMIT 50");
+// Fetch seller's products with order/sales information
+$pStmt = $conn->prepare(
+    "SELECT c.clothesID, c.title, c.category, c.sellPrice, c.status, c.createdAt,
+            COUNT(o.orderID) as totalSales, SUM(o.totalAmount) as totalRevenue
+     FROM tblClothes c
+     LEFT JOIN tblOrder o ON c.clothesID = o.clothesID
+     WHERE c.sellerID = ?
+     GROUP BY c.clothesID
+     ORDER BY c.createdAt DESC"
+);
 if ($pStmt) {
+    $pStmt->bind_param("i", $userID);
     $pStmt->execute();
     $products = $pStmt->get_result()->fetch_all(MYSQLI_ASSOC);
     $pStmt->close();
@@ -286,20 +296,65 @@ $conditions = ['Mint', 'Good', 'Fair', 'Well-Loved'];
   <?php if (empty($products)): ?>
     <p class="empty">No products yet. Create your first listing above!</p>
   <?php else: ?>
-    <div class="product-grid">
+    <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:1.5rem; margin-top:1rem;">
       <?php foreach ($products as $p): ?>
-        <div class="product-card">
-          <div class="product-img">🧥 <?= htmlspecialchars($p['category']) ?></div>
-          <div class="product-info">
-            <div class="product-title"><?= htmlspecialchars($p['title']) ?></div>
-            <div class="product-meta"><?= htmlspecialchars($p['category']) ?></div>
-            <div class="product-price">R <?= number_format($p['sellPrice'], 2) ?></div>
-            <span class="product-status <?= $p['status'] === 'active' ? 'status-active' : 'status-sold' ?>">
-              <?= ucfirst($p['status']) ?>
-            </span>
+        <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; transition:transform .2s;">
+          <!-- Image -->
+          <div style="width:100%; height:150px; background:#1f1f1f; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+            <img src="images/<?= htmlspecialchars($p['imageFile']) ?>" alt="<?= htmlspecialchars($p['title']) ?>" 
+              style="width:100%; height:100%; object-fit:cover;" onerror="this.style.display='none'; this.parentElement.innerHTML='🧥 ' + '<?= htmlspecialchars($p['category']) ?>';">
+          </div>
+          <!-- Info -->
+          <div style="padding:1rem;">
+            <div style="font-weight:600; font-size:.95rem; margin-bottom:.3rem; word-break:break-word;"><?= htmlspecialchars($p['title']) ?></div>
+            <div style="font-size:.8rem; color:var(--muted); margin-bottom:.5rem;"><?= htmlspecialchars($p['category']) ?></div>
+            <div style="font-weight:600; color:var(--gold); margin-bottom:.5rem;">R <?= number_format($p['sellPrice'], 2) ?></div>
+            
+            <!-- Status Badge -->
+            <div style="margin-bottom:.5rem;">
+              <span style="padding:.2rem .4rem; border-radius:4px; font-size:.75rem; 
+                background:<?= $p['status'] === 'active' ? '#122a12' : ($p['status'] === 'sold' ? '#2a1212' : '#2a2a2a') ?>; 
+                color:<?= $p['status'] === 'active' ? '#5cb85c' : ($p['status'] === 'sold' ? '#e05252' : '#888') ?>;">
+                <?= ucfirst($p['status']) ?>
+              </span>
+            </div>
+            
+            <!-- Sales Info -->
+            <div style="font-size:.8rem; color:var(--muted); margin-bottom:.3rem;">
+              <strong style="color:var(--text);"><?= (int)$p['totalSales'] ?></strong> sale<?= $p['totalSales'] != 1 ? 's' : '' ?>
+            </div>
+            <div style="font-size:.8rem; color:var(--muted);">
+              Revenue: <strong style="color:var(--gold);">R <?= number_format($p['totalRevenue'] ?? 0, 2) ?></strong>
+            </div>
           </div>
         </div>
       <?php endforeach; ?>
+    </div>
+
+    <!-- ── Sales Summary ──────────────────────────────────────── -->
+    <?php
+      $totalProducts = count($products);
+      $activeListed = count(array_filter($products, function($p) { return $p['status'] === 'active'; }));
+      $totalSalesMade = array_sum(array_map(function($p) { return (int)$p['totalSales']; }, $products));
+      $totalRevenueEarned = array_sum(array_map(function($p) { return (float)($p['totalRevenue'] ?? 0); }, $products));
+    ?>
+    <div style="background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-top:2rem; display:grid; grid-template-columns:repeat(4, 1fr); gap:1rem;">
+      <div style="text-align:center; border-right:1px solid var(--border);">
+        <div style="font-size:1.8rem; color:var(--gold); font-weight:bold;"><?= $totalProducts ?></div>
+        <div style="font-size:.8rem; color:var(--muted); margin-top:.3rem;">Total Products</div>
+      </div>
+      <div style="text-align:center; border-right:1px solid var(--border);">
+        <div style="font-size:1.8rem; color:#5cb85c; font-weight:bold;"><?= $activeListed ?></div>
+        <div style="font-size:.8rem; color:var(--muted); margin-top:.3rem;">Active Listings</div>
+      </div>
+      <div style="text-align:center; border-right:1px solid var(--border);">
+        <div style="font-size:1.8rem; color:#c9a86c; font-weight:bold;"><?= $totalSalesMade ?></div>
+        <div style="font-size:.8rem; color:var(--muted); margin-top:.3rem;">Total Sales</div>
+      </div>
+      <div style="text-align:center;">
+        <div style="font-size:1.8rem; color:var(--gold); font-weight:bold;">R <?= number_format($totalRevenueEarned, 2) ?></div>
+        <div style="font-size:.8rem; color:var(--muted); margin-top:.3rem;">Total Revenue</div>
+      </div>
     </div>
   <?php endif; ?>
 

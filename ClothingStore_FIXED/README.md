@@ -150,6 +150,7 @@ ClothingStore_FIXED/
 │   └── logout.php
 ├── css/                 Add external stylesheets here
 ├── images/              Add product photos here (jpg/png)
+│                        If an image fails to load, it will show the category emoji instead (🧥)
 ├── js/                  Add external scripts here
 ├── DBConn.php           Database connection settings
 ├── checkout.php         Order placement page

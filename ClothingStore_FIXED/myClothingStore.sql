@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS tblAdmin (
 -- -----------------------------------------------
 CREATE TABLE IF NOT EXISTS tblClothes (
     clothesID   INT AUTO_INCREMENT PRIMARY KEY,
+    sellerID    INT                 DEFAULT NULL,
     title       VARCHAR(200)        NOT NULL,
     category    VARCHAR(80)         NOT NULL,
     brand       VARCHAR(100)        DEFAULT NULL,
@@ -59,7 +60,8 @@ CREATE TABLE IF NOT EXISTS tblClothes (
     retailPrice DECIMAL(10,2)       DEFAULT NULL,
     imageFile   VARCHAR(255)        DEFAULT 'placeholder.jpg',
     status      ENUM('active','sold','inactive') NOT NULL DEFAULT 'active',
-    createdAt   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP
+    createdAt   DATETIME            NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_clothes_seller FOREIGN KEY (sellerID) REFERENCES tblUser(userID) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB;
 
 -- -----------------------------------------------
