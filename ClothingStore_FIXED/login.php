@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Associative read using column names
         $stmt = $conn->prepare(
-            "SELECT userID, fullName, email, province, isVerified, status
+            "SELECT userID, fullName, email, province, isVerified, status, role
              FROM tblUser
              WHERE email = ? AND password = ?"
         );
@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['userID']   = $user['userID'];
                     $_SESSION['fullName'] = $user['fullName'];
                     $_SESSION['email']    = $user['email'];
-                    $_SESSION['role']     = 'user';
+                    $_SESSION['role']     = $user['role'];
 
                     header("Location: dashboard.php");
                     exit;

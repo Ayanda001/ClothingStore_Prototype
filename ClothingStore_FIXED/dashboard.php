@@ -18,7 +18,7 @@ $userID = $_SESSION['userID'];
 
 // ── Fetch user data using associative read ────────────────────────────────────
 $stmt = $conn->prepare(
-    "SELECT userID, fullName, email, province, isVerified, status, createdAt
+    "SELECT userID, fullName, email, province, isVerified, status, role, createdAt
      FROM tblUser WHERE userID = ?"
 );
 $stmt->bind_param("i", $userID);
@@ -115,6 +115,9 @@ $conn->close();
   <a href="index.php" class="logo">DISCOVER AND RE-WIND</a>
   <div class="nav-links">
     <a href="shop.php">Shop</a>
+    <?php if ($_SESSION['role'] ?? null === 'seller'): ?>
+      <a href="seller-products.php">My Products</a>
+    <?php endif; ?>
     <a href="dashboard.php" class="active">My Account</a>
     <a href="logout.php" class="btn-logout">Logout</a>
   </div>
@@ -124,7 +127,7 @@ $conn->close();
 
   <!-- ── Identity banner ─────────────────────────────────────── -->
   <div class="welcome-banner">
-    <h2>User <?= htmlspecialchars($user['fullName']) ?> is logged in</h2>
+    <h2><?= strtoupper($user['role']) ?> — <?= htmlspecialchars($user['fullName']) ?> is logged in</h2>
     <p>Welcome back! Here is your account overview.</p>
   </div>
 
@@ -150,6 +153,7 @@ $conn->close();
       </td>
     </tr>
     <tr><td>Verified</td>   <td><?= $user['isVerified'] ? '✅ Yes' : '⏳ Pending' ?></td></tr>
+    <tr><td>Role</td>        <td><strong><?= ucfirst($user['role']) ?></strong></td></tr>
     <tr><td>Member Since</td><td><?= date('d M Y', strtotime($user['createdAt'])) ?></td></tr>
   </table>
 
