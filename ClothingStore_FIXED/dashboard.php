@@ -115,7 +115,7 @@ $conn->close();
   <a href="index.php" class="logo">DISCOVER AND RE-WIND</a>
   <div class="nav-links">
     <a href="shop.php">Shop</a>
-    <?php if ($_SESSION['role'] ?? null === 'seller'): ?>
+    <?php if (($_SESSION['role'] ?? null) === 'seller'): ?>
       <a href="seller-products.php">My Products</a>
     <?php endif; ?>
     <a href="dashboard.php" class="active">My Account</a>
